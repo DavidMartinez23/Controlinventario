@@ -9,7 +9,7 @@ use App\Http\Controllers\PedidoClienteController;
 use App\Http\Controllers\PedidoCompraController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
