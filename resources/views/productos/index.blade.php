@@ -25,7 +25,8 @@
                 <td>{{ $producto->stock ?? '-' }}</td>
                 <td>{{ $producto->precio ?? '-' }}</td>
                 <td>
-                    <!-- Aquí puedes agregar botones de editar/eliminar si lo deseas -->
+                    <a href="{{ route('productos.edit', $producto) }}" class="btn btn-sm btn-warning">Editar</a>
+                    <!-- Aquí puedes agregar el botón de eliminar si lo deseas -->
                 </td>
             </tr>
             @endforeach

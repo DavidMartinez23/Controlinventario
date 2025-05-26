@@ -51,7 +51,7 @@ class ProductoController extends Controller
      */
     public function edit(Producto $producto)
     {
-        //
+        return view('productos.edit', compact('producto'));
     }
 
     /**
@@ -59,7 +59,13 @@ class ProductoController extends Controller
      */
     public function update(Request $request, Producto $producto)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'stock' => 'required|integer',
+            'precio' => 'required|numeric',
+        ]);
+        $producto->update($request->only(['nombre', 'stock', 'precio']));
+        return redirect()->route('productos.index')->with('success', 'Producto actualizado correctamente.');
     }
 
     /**
