@@ -21,7 +21,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('clientes', ClienteController::class);
-    Route::resource('proveedores', ProveedorController::class);
+    Route::resource('proveedores', ProveedorController::class)->parameters([
+        'proveedores' => 'proveedor'
+    ]);
     Route::resource('productos', ProductoController::class);
     Route::resource('pedidos-clientes', PedidoClienteController::class);
     Route::resource('pedidos-compras', PedidoCompraController::class);
