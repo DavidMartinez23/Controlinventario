@@ -33,4 +33,31 @@ class Producto extends Model
             ->withPivot('cantidad', 'precio_unitario')
             ->withTimestamps();
     }
+
+    public function proveedores()
+    {
+        return $this->belongsToMany(Proveedor::class, 'producto_proveedor');
+    }
+
+    public function aumentarStock($cantidad, $motivo = null)
+    {
+        $this->stock += $cantidad;
+        $this->save();
+        $this->movimientos()->create([
+            'tipo' => 'entrada',
+            'cantidad' => $cantidad,
+            'motivo' => $motivo
+        ]);
+    }
+
+    public function disminuirStock($cantidad, $motivo = null)
+    {
+        $this->stock -= $cantidad;
+        $this->save();
+        $this->movimientos()->create([
+            'tipo' => 'salida',
+            'cantidad' => $cantidad,
+            'motivo' => $motivo
+        ]);
+    }
 }

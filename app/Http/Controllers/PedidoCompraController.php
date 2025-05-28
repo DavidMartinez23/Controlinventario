@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PedidoCompra;
 use App\Models\Proveedor;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 
 class PedidoCompraController extends Controller
@@ -17,7 +18,8 @@ class PedidoCompraController extends Controller
     public function create()
     {
         $proveedors = Proveedor::all();
-        return view('pedidos_compras.create', compact('proveedors'));
+        $productos = \App\Models\Producto::all();
+        return view('pedidos_compras.create', compact('proveedors', 'productos'));
     }
 
     public function store(Request $request)
@@ -26,9 +28,20 @@ class PedidoCompraController extends Controller
             'proveedor_id' => 'required|exists:proveedors,id',
             'fecha' => 'required|date',
             'total' => 'required|numeric',
+            'productos' => 'required|array',
+            'productos.*.id' => 'required|exists:productos,id',
+            'productos.*.cantidad' => 'required|integer|min:1',
         ]);
-        PedidoCompra::create($request->all());
-        return redirect()->route('pedidos-compras.index')->with('success', 'Pedido de compra creado correctamente');
+        $pedido = PedidoCompra::create($request->only(['proveedor_id', 'fecha', 'total']));
+        foreach ($request->productos as $prod) {
+            $pedido->productos()->attach($prod['id'], [
+                'cantidad' => $prod['cantidad'],
+                'precio_unitario' => $prod['precio_unitario'] ?? 0
+            ]);
+            $producto = Producto::find($prod['id']);
+            $producto->aumentarStock($prod['cantidad'], 'Compra a proveedor');
+        }
+        return redirect()->route('pedidos-compras.index')->with('success', 'Pedido de compra creado y stock actualizado');
     }
 
     public function show(PedidoCompra $pedido_compra)

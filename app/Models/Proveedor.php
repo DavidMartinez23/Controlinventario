@@ -15,4 +15,9 @@ class Proveedor extends Model
         'telefono',
         'direccion',
     ];
+
+    public function productos()
+    {
+        return $this->belongsToMany(Producto::class, 'producto_proveedor');
+    }
 }

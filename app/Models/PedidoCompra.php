@@ -19,4 +19,11 @@ class PedidoCompra extends Model
     {
         return $this->belongsTo(Proveedor::class);
     }
+
+    public function productos()
+    {
+        return $this->belongsToMany(\App\Models\Producto::class, 'pedido_compra_producto')
+            ->withPivot('cantidad', 'precio_unitario')
+            ->withTimestamps();
+    }
 }
